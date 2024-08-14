@@ -1,16 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors'); // Import CORS
+const cors = require('cors');
 const fs = require('fs');
 const { createObjectCsvWriter } = require('csv-writer');
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors()); // Use CORS middleware
+app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files from the 'public' folder
 
 // Setup the CSV writer
 const csvWriter = createObjectCsvWriter({
@@ -20,17 +18,15 @@ const csvWriter = createObjectCsvWriter({
         { id: 'loverName', title: 'Lover\'s Name' },
         { id: 'percentage', title: 'Love Percentage' }
     ],
-    append: true // So that it doesn't overwrite the file every time
+    append: true
 });
 
 // Endpoint to handle love calculation
 app.post('/api/calculate-love', (req, res) => {
     const { yourName, loverName } = req.body;
 
-    // Simple love percentage logic (random for now)
     const lovePercentage = Math.floor(Math.random() * 100) + 1;
 
-    // Data to write to CSV
     const data = [
         {
             yourName: yourName,
@@ -39,7 +35,6 @@ app.post('/api/calculate-love', (req, res) => {
         }
     ];
 
-    // Write to CSV file
     csvWriter.writeRecords(data)
         .then(() => {
             console.log('Data written to CSV file successfully.');
@@ -51,7 +46,4 @@ app.post('/api/calculate-love', (req, res) => {
         });
 });
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Love Calculator app listening at http://localhost:${port}`);
-});
+module.exports = app;
